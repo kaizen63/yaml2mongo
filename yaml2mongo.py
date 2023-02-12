@@ -128,7 +128,7 @@ def main():
 
     parser = argparse.ArgumentParser(description='Load Yaml files into MongoDB collections')
     parser.add_argument('-f', '--filename', help='The name of Yaml file', required=True)
-    parser.add_argument('-c', '--collection', help='The name of the collection do load the file into', required=True)
+    parser.add_argument('-c', '--collection', help='The name of the collection to load the file into', required=True)
     parser.add_argument('-d', '--database', help='The database to load the file into', required=True)
     parser.add_argument('-k', '--key', help='The unique key(s) of the document. Multiple -k possible', action='append')
     parser.add_argument('-u', '--username', help='The mongodb username. Default: env variable MONGODB_USERNAME',

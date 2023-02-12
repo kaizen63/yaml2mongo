@@ -1,0 +1,31 @@
+version: 1
+formatters:
+  simple:
+    format: '%(levelname)s - %(message)s'
+  ts_format:
+    format: '%(asctime)s,%(msecs)03d+00:00 %(levelname)s [%(name)s] [%(process)d] - %(message)s'
+    datefmt: "%Y-%m-%dT%H:%M:%S"
+  debug_format:
+    format: '%(asctime)s,%(msecs)03d+00:00 %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] - %(message)s'
+    datefmt: "%Y-%m-%dT%H:%M:%S"
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: simple
+    stream: ext://sys.stdout
+  logfile:
+    class: logging.FileHandler
+    level: INFO
+    formatter: ts_format
+    #formatter: debug_format
+    filename: yaml2mongo.log
+    mode: a
+loggers:
+  __main__:
+    level: INFO
+    handlers: [ console, logfile ]
+    propagate: no
+root:
+  level: INFO
+  handlers: [ console, logfile ]

@@ -1,0 +1,9 @@
+# Example .env file
+
+MONGODB_USERNAME=<<your username>>
+MONGODB_PASSWORD=<<your password>>
+
+# The program will automatically encode username and password into the URI when using replacement variables
+# If you provide username and password in the uri, make sure they do not contain special characters or are encoded.
+# Using {username} and {password} replacement variables enables you to use the command line parameters --username and --password
+MONGODB_URI="mongodb+srv://{username}:{password}@<<cluster and options>>"

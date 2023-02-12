@@ -35,7 +35,7 @@ def update_database(collection: Collection, document: dict, search_keys: list[st
     search_values = {}
     for k in search_keys:
         search_values[k] = document[k]
-
+    
     try:
         find_result: dict = collection.find_one_and_update(search_values, {'$set': document})
         if not find_result:
@@ -88,7 +88,7 @@ def load_document(collection: Collection, document: dict, search_keys: list) -> 
     except Exception as err:
         logger.exception(f'Failed to load: {document}. Error: {err}')
         raise
-
+    
     return document_id, updated
 
 
@@ -105,27 +105,27 @@ def load_collection(filename: pathlib.Path, collection: Collection, search_keys:
     """
     yaml_docs = read_yaml(filename)
     insert_count = update_count = 0
-
+    
     for yaml_doc in yaml_docs:
         _, updated = load_document(collection, yaml_doc, search_keys)
         if updated:
             update_count += 1
         else:
             insert_count += 1
-
+    
     return {'total': len(yaml_docs), 'inserted': insert_count, 'updated': update_count}
 
 
 def main():
     """Load a yaml file into a mongodb database"""
-
+    
     load_dotenv('.env', override=False)
     setup_logging()
     logger = logging.getLogger(__name__)
     config = read_config(pathlib.Path(pathlib.Path(__file__).name).with_suffix('.toml'))
     if not config:
         logger.debug('No configuration.')
-
+    
     parser = argparse.ArgumentParser(description='Load Yaml files into MongoDB collections')
     parser.add_argument('-f', '--filename', help='The name of Yaml file', required=True)
     parser.add_argument('-c', '--collection', help='The name of the collection to load the file into', required=True)
@@ -138,10 +138,10 @@ def main():
                         default=os.getenv('MONGODB_PASSWORD'))
     parser.add_argument('--uri', help='The mongodb uri. Default: env variable MONGODB_URI',
                         default=os.getenv('MONGODB_URI'))
-
+    
     args = parser.parse_args()
     commandline_args = {k: v for k, v in vars(args).items() if v}
-
+    
     filename = commandline_args.get('filename')
     database = commandline_args.get('database')
     collection = commandline_args.get('collection')
@@ -149,24 +149,24 @@ def main():
     username = commandline_args.get('username')
     password = commandline_args.get('password')
     mongodb_uri = commandline_args.get('uri')
-
+    
     if not mongodb_uri:
         logger.error(f'Please provide MONGODB_URI env variable or --uri commandline arg')
         raise SystemExit(1)
-
+    
     if '{username}' in mongodb_uri:
         mongodb_uri = mongodb_uri.replace('{username}', quote_plus(username))
-
+    
     if '{password}' in mongodb_uri:
         mongodb_uri = mongodb_uri.replace('{password}', quote_plus(password))
-
+    
     with Timer(logger=logger.info):
         try:
-            client = MongoClient(host=mongodb_uri, tz_aware=True, connect=True)
+            client: MongoClient = MongoClient(host=mongodb_uri, tz_aware=True, connect=True)
         except ConnectionFailure as err:
             logger.exception(f'Cannot connect to mongo: {err}')
             raise SystemExit(1)
-
+        
         db: Database = client[database]
         statistics = load_collection(pathlib.Path(filename).resolve(), db[collection], keys)
         logger.info(

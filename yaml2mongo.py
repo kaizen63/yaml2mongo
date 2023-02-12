@@ -130,7 +130,8 @@ def main():
     parser.add_argument('-f', '--filename', help='The name of Yaml file', required=True)
     parser.add_argument('-c', '--collection', help='The name of the collection to load the file into', required=True)
     parser.add_argument('-d', '--database', help='The database to load the file into', required=True)
-    parser.add_argument('-k', '--key', help='The unique key(s) of the document. Multiple -k possible', action='append')
+    parser.add_argument('-k', '--key', help='The unique key(s) of the document. Multiple -k possible',
+                        action='append', required=True)
     parser.add_argument('-u', '--username', help='The mongodb username. Default: env variable MONGODB_USERNAME',
                         default=os.getenv('MONGODB_USERNAME'))
     parser.add_argument('-p', '--password', help='The mongodb password. Default: env variable MONGODB_PASSWORD',

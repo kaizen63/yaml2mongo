@@ -3,9 +3,14 @@ Reads the configuration file in toml format
 """
 
 import pathlib
-import tomllib
 import logging
 import os
+
+# Support for python < 3.11
+try:
+    import tomllib
+except ModuleNotFoundError:
+    import tomli as tomllib
 
 
 def read_config(default_path: str | pathlib.Path = 'config.toml', env_key: str = 'APP_CONFIG') -> dict:
@@ -22,7 +27,7 @@ def read_config(default_path: str | pathlib.Path = 'config.toml', env_key: str =
     env_path = os.getenv(env_key, None)
     if env_path:
         file_path = pathlib.Path(env_path)
-
+    
     if file_path.exists():
         with open(file_path, 'rb') as f:
             try:
@@ -33,5 +38,5 @@ def read_config(default_path: str | pathlib.Path = 'config.toml', env_key: str =
                 raise error
     else:
         return {}
-
+    
     return config

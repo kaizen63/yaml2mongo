@@ -8,9 +8,10 @@ import time
 import pathlib
 import os
 import yaml
+from typing import Union
 
 
-def setup_logging(default_path: str | pathlib.Path = 'logging-conf.yaml',
+def setup_logging(default_path: Union[str, pathlib.Path] = 'logging-conf.yaml',
                   default_level: int = logging.INFO,
                   env_key: str = 'LOGGING_CONFIG',
                   log_in_utc: bool = True):

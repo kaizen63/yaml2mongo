@@ -5,17 +5,19 @@ Program to load documents in yaml format into a mongo database.
 ## Usage
 
 ```bash
-usage: yaml2mongo.py [-h] -f FILENAME -c COLLECTION -d DATABASE [-k KEY]
-                     [-u USERNAME] [-p PASSWORD] [--uri URI]
+usage: yaml2mongo.py [-h] -c COLLECTION -d DATABASE -k KEY [-u USERNAME]
+                     [-p PASSWORD] [--uri URI]
+                     filename [filename ...]
 
-Load Yaml files into MongoDB collections
+Load Yaml files into MongoDB collection
+
+positional arguments:
+  filename              The name of Yaml file
 
 options:
   -h, --help            show this help message and exit
-  -f FILENAME, --filename FILENAME
-                        The name of Yaml file
   -c COLLECTION, --collection COLLECTION
-                        The name of the collection do load the file into
+                        The name of the collection to load the file into
   -d DATABASE, --database DATABASE
                         The database to load the file into
   -k KEY, --key KEY     The unique key(s) of the document. Multiple -k
@@ -27,6 +29,5 @@ options:
                         The mongodb password. Default: env variable
                         MONGODB_PASSWORD
   --uri URI             The mongodb uri. Default: env variable MONGODB_URI
-
 
 ```

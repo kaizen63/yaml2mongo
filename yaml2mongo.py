@@ -126,8 +126,10 @@ def main():
     if not config:
         logger.debug('No configuration.')
     
-    parser = argparse.ArgumentParser(description='Load Yaml files into MongoDB collections')
-    parser.add_argument('-f', '--filename', help='The name of Yaml file', required=True)
+    parser = argparse.ArgumentParser(description='Load Yaml files into MongoDB collection')
+    
+    #    parser.add_argument('-f', '--filename', help='The name of Yaml file', required=True)
+    parser.add_argument('filename', help='The name of Yaml file', nargs='+')
     parser.add_argument('-c', '--collection', help='The name of the collection to load the file into', required=True)
     parser.add_argument('-d', '--database', help='The database to load the file into', required=True)
     parser.add_argument('-k', '--key', help='The unique key(s) of the document. Multiple -k possible',
@@ -142,7 +144,7 @@ def main():
     args = parser.parse_args()
     commandline_args = {k: v for k, v in vars(args).items() if v}
     
-    filename = commandline_args.get('filename')
+    filenames = commandline_args.get('filename')
     database = commandline_args.get('database')
     collection = commandline_args.get('collection')
     keys = commandline_args.get('key')
@@ -168,9 +170,10 @@ def main():
             raise SystemExit(1)
         
         db: Database = client[database]
-        statistics = load_collection(pathlib.Path(filename).resolve(), db[collection], keys)
-        logger.info(
-            f'{filename}: total docs: {statistics["total"]}, updated: {statistics["updated"]}, inserted: {statistics["inserted"]}')
+        for filename in filenames:
+            statistics = load_collection(pathlib.Path(filename).resolve(), db[collection], keys)
+            logger.info(
+                f'{filename}: total docs: {statistics["total"]}, updated: {statistics["updated"]}, inserted: {statistics["inserted"]}')
 
 
 if __name__ == '__main__':

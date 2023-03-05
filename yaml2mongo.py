@@ -33,11 +33,17 @@ def update_database(collection: Collection, document: dict, search_keys: list[st
     """
     logger = logging.getLogger(__name__)
     search_values = {}
+    if not search_keys:
+        search_keys = []
     for k in search_keys:
         search_values[k] = document[k]
     
     try:
-        find_result: dict = collection.find_one_and_update(search_values, {'$set': document})
+        if search_values:
+            find_result: dict = collection.find_one_and_update(search_values, {'$set': document})
+        else:
+            find_result = None
+        
         if not find_result:
             inserted_id = collection.insert_one(document).inserted_id
             return inserted_id, False
@@ -133,7 +139,7 @@ def main():
     parser.add_argument('-c', '--collection', help='The name of the collection to load the file into', required=True)
     parser.add_argument('-d', '--database', help='The database to load the file into', required=True)
     parser.add_argument('-k', '--key', help='The unique key(s) of the document. Multiple -k possible',
-                        action='append', required=True)
+                        action='append', required=False)
     parser.add_argument('-u', '--username', help='The mongodb username. Default: env variable MONGODB_USERNAME',
                         default=os.getenv('MONGODB_USERNAME'))
     parser.add_argument('-p', '--password', help='The mongodb password. Default: env variable MONGODB_PASSWORD',
@@ -153,7 +159,7 @@ def main():
     mongodb_uri = commandline_args.get('uri')
     
     if not mongodb_uri:
-        logger.error(f'Please provide MONGODB_URI env variable or --uri commandline arg')
+        logger.error('Please provide MONGODB_URI env variable or --uri commandline arg')
         raise SystemExit(1)
     
     if '{username}' in mongodb_uri:
